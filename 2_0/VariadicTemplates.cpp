@@ -102,5 +102,7 @@ int main(){
     std::cout << "******** 泛化与特化 *********" << std::endl;
     print1(1,2,3,4);
 
+    
+
     return 0;
 }

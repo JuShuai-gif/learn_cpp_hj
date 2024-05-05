@@ -65,5 +65,6 @@
         "typeinfo": "cpp",
         "variant": "cpp",
         "bit": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/home/robot/code/c++/learn_cpp_hj/C++primer/13"
 }

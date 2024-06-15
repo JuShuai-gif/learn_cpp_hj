@@ -1,11 +1,7 @@
-cmake_minimum_required(VERSION 3.5)
+add_executable(2_0_test test.cpp)
 
-project(test)
+add_executable(2_0_VariadicTemplates VariadicTemplates.cpp)
 
-add_executable(test test.cpp)
+add_executable(2_0_initializer_list_ initializer_list_.cpp)
 
-add_executable(VariadicTemplates VariadicTemplates.cpp)
-
-add_executable(initializer_list_ initializer_list_.cpp)
-
-add_executable(explicit_ explicit_.cpp)
+add_executable(2_0_explicit_ explicit_.cpp)

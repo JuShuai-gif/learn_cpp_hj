@@ -1,9 +1,3 @@
-cmake_minimum_required(VERSION 3.5)
-set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_CXX_STANDARD 14)
-
-project(GongZhongHao)
-
 add_executable(move_forward move_forward.cpp)
 
 add_executable(noeccept_test noeccept_test.cpp)

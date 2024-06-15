@@ -3,6 +3,7 @@
 
 int main() {
     // 字符串字面值转换为std::string
+    // "Hello, World!" 这种就叫做字符串字面值
     const char* c_str = "Hello, World!";
     std::string str = c_str;
     std::cout << "std::string: " << str << std::endl;

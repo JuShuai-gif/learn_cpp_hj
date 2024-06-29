@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 using namespace std;
 
@@ -73,17 +74,15 @@ int main() {
     init_list 包含要复制的元素的 initializer_list。
 
      */
-    // 创建一个空 vector 
+    // 创建一个空 vector
     vector<int> v011;
 
     // 创建一个包含三个元素的vector 默认元素为0
     vector<int> v111(3);
-    for (auto &&i : v111)
-    {
+    for (auto &&i : v111) {
         cout << i << " ";
     }
     cout << endl;
-    
 
     // 创建一个包含五个元素的vector 默认值都是2
     vector<int> v211(5, 2);
@@ -374,10 +373,275 @@ int main() {
     cout << "The number of elements in v1 = " << v18.size() << endl;
     cout << "The number of elements in v2 = " << v28.size() << endl;
 
+    // swap使用的一个小技巧
+    std::vector<int> v19;
+    v19.reserve(100); // 保证初始容量很大
+    for (int i = 0; i < 10; ++i) {
+        v19.push_back(i);
+    }
+
+    std::cout << "Before shrink:" << std::endl;
+    std::cout << "Size: " << v19.size() << std::endl;         // 输出：10
+    std::cout << "Capacity: " << v19.capacity() << std::endl; // 输出：100
+
+    // 收缩空间
+    std::vector<int>(v19).swap(v19);
+    /* 上面这句代码的解释
+        1. 创建临时对象：创建一个新的 std::vector 对象，其内容是原对象的拷贝。
+        2. 交换内容：交换临时对象和原对象的内部数据，包括指向元素的指针、大小和容量。
+        3. 销毁临时对象：临时对象在作用域结束时被销毁，从而释放原对象的多余内存。
+    */
+
+    std::cout << "After shrink:" << std::endl;
+    std::cout << "Size: " << v19.size() << std::endl;         // 输出：10
+    std::cout << "Capacity: " << v19.capacity() << std::endl; // 输出：10
+
+    /* std::vector<int>(v19).swap(v19); 和 shrink_to_fit的对比
+    1. 强制性：
+    std::vector<int>(v).swap(v); 强制进行容量收缩。
+    shrink_to_fit() 是一个建议，标准库实现可以选择忽略这个请求。
+
+    2. 性能和开销：
+    std::vector<int>(v).swap(v); 可能比 shrink_to_fit() 开销更大，因为它需要创建一个新的临时对象并进行数据交换。
+    shrink_to_fit() 的实现通常会尝试优化性能，可能会比前者更高效。
+
+    3. 兼容性和可移植性：
+    std::vector<int>(v).swap(v); 更为通用，因为它不依赖于 shrink_to_fit 的支持。
+    shrink_to_fit() 在现代 C++ 标准中被广泛支持，但其行为依赖于具体实现。
+
+    4. 代码简洁性：
+    shrink_to_fit() 语法更简洁，易读易维护。
+    std::vector<int>(v).swap(v); 语法稍微复杂，但显式且有效。
+
+    建议优先使用 shrink_to_fit()
+    */
+
     /************* 18. value_type：一个类型，它代表向量中存储的数据类型 ***************/
     vector<int>::value_type AnInt;
     AnInt = 44;
     cout << AnInt << endl;
+
+    /********** 19. data: 返回指向向量中第一个元素的指针 ***********/
+    /*
+    返回值：一个指针，它指向 vector 中第一个元素或紧随空 vector 后的位置
+    */
+    vector<int> c20;
+    // 可以改变的指针
+    vector<int>::pointer c20_ptr;
+    // 常量指针
+    vector<int>::const_pointer c20_cPtr;
+
+    c20.push_back(1);
+    c20.push_back(2);
+
+    cout << "The vector c20 contains elements:";
+    c20_cPtr = c20.data();
+    for (size_t n = c20.size(); 0 < n; --n, c20_cPtr++) {
+        cout << " " << *c20_cPtr;
+    }
+    cout << endl;
+
+    cout << "The vector c20 now contains elements:";
+    c20_ptr = c20.data();
+    *c20_ptr = 20;
+    for (size_t n = c20.size(); 0 < n; --n, c20_ptr++) {
+        cout << " " << *c20_ptr;
+    }
+    cout << endl;
+
+    /********* 20. difference_type: 一个类型，它提供引用同一向量中元素的两个迭代器之间的差异 ***********/
+    /*
+    注解：difference_type 也可以被描述为两个指针之间的元素数，因为指向一个元素的指针包含其地址
+    */
+    vector<int> c21;
+    vector<int>::iterator c121_Iter, c221_Iter;
+
+    c21.push_back(30);
+    c21.push_back(20);
+    c21.push_back(30);
+    c21.push_back(10);
+    c21.push_back(30);
+    c21.push_back(20);
+
+    c121_Iter = c21.begin();
+    c221_Iter = c21.end();
+
+    // 返回两个迭代器之间的差值，类型是 std::ptrdiff_t
+    std::vector<int>::difference_type diff = c221_Iter - c121_Iter;
+    std::cout << "The distance between the two iterators is: " << diff << std::endl;
+
+    vector<int>::difference_type df_typ1, df_typ2, df_typ3;
+
+    df_typ1 = count(c121_Iter, c221_Iter, 10);
+    df_typ2 = count(c121_Iter, c221_Iter, 20);
+    df_typ3 = count(c121_Iter, c221_Iter, 30);
+    cout << "The number '10' is in c1 collection " << df_typ1 << " times.\n";
+    cout << "The number '20' is in c1 collection " << df_typ2 << " times.\n";
+    cout << "The number '30' is in c1 collection " << df_typ3 << " times.\n";
+
+    /********** 21. emplace：将就地构造的元素插入到指定位置的向量中 **********/
+    /*
+    template <class... Types>
+    iterator emplace(
+    const_iterator position,
+    Types&&... args);
+    参数：
+    position：vector中插入第一个元素的位置
+    args: 构造函数，函数根据所提供的自变量来推断要调用的构造函数重载。
+    返回值：
+    函数将返回一个指向vector中新元素的插入位置的迭代器
+    */
+
+    vector<int> v22;
+    vector<int>::iterator Iter22;
+
+    v22.push_back(10);
+    v22.push_back(20);
+    v22.push_back(30);
+
+    cout << "v22 =";
+    for (Iter22 = v22.begin(); Iter22 != v22.end(); Iter22++)
+        cout << " " << *Iter22;
+    cout << endl;
+
+    // initialize a vector of vectors by moving v1
+    vector<vector<int>> vv122;
+
+    vv122.emplace(vv122.begin(), move(v22));
+    if (vv122.size() != 0 && vv122[0].size() != 0) {
+        cout << "vv122[0] =";
+        for (Iter22 = vv122[0].begin(); Iter22 != vv122[0].end(); Iter22++)
+            cout << " " << *Iter22;
+        cout << endl;
+    }
+
+    /******** 22. empty: 测试vector是否为空 *******/
+    /*
+    返回值：如果vector为空，则返回true,如果vector不为空，则返回false
+    */
+    vector<int> v123;
+
+    v123.push_back(10);
+
+    if (v123.empty())
+        cout << "The vector is empty." << endl;
+    else
+        cout << "The vector is not empty." << endl;
+
+    /******** 23. erase: 从指定位置删除向量中的一个元素或一系列元素 *******/
+    /*
+    iterator erase(
+    const_iterator position);
+
+    iterator erase(
+    const_iterator first,
+    const_iterator last);
+    参数：
+    返回值：一个迭代器，它指定已移除的任何元素之外保留的第一个元素或指向向量末尾的指针（若此类元素不存在）
+
+    该容器的大小（size）会减 1，但容量（capacity）不会发生改变
+    */
+    vector<int> v124;
+    vector<int>::iterator Iter24;
+
+    v124.push_back(10);
+    v124.push_back(20);
+    v124.push_back(30);
+    v124.push_back(40);
+    v124.push_back(50);
+
+    cout << "v124 =";
+    for (Iter24 = v124.begin(); Iter24 != v124.end(); Iter24++)
+        cout << " " << *Iter24;
+    cout << endl;
+    // 移除第一个元素
+    v124.erase(v124.begin());
+    cout << "v124 =";
+    for (Iter24 = v124.begin(); Iter24 != v124.end(); Iter24++)
+        cout << " " << *Iter24;
+    cout << endl;
+    // 移除一串元素
+    v124.erase(v124.begin() + 1, v124.begin() + 3);
+    cout << "v124 =";
+    for (Iter24 = v124.begin(); Iter24 != v124.end(); Iter24++)
+        cout << " " << *Iter24;
+    cout << endl;
+
+    /****** 24. front: 返回vector中第一个元素的引用 ******/
+    /*
+    reference front();
+    const_reference front() const;
+    返回值： 对向量对象中第一个元素的引用。 如果向量为空，则返回值不确定
+    注解：
+    如果将 front 的返回值分配给 const_reference，则可以修改向量对象。
+    如果将 front 的返回值分配给 reference，则可以修改矢量对象
+    */
+    vector<int> v125;
+
+    v125.push_back(10);
+    v125.push_back(11);
+
+    int &i25 = v125.front();
+    const int &ii25 = v125.front();
+
+    cout << "The first integer of v1 is " << i25 << endl;
+    // by incrementing i, we move the front reference to the second element
+    i25++;
+    cout << "Now, the first integer of v1 is " << i25 << endl;
+
+    /******** 25. get_allocator：返回用于构造矢量的分配器对象的一个副本 *******/
+    /*
+    Allocator get_allocator() const;
+    返回值：vector所使用的分配器
+    注解：矢量类的分配器指定类管理存储的方式。
+    C++ 标准库容器类提供的默认分配器足以满足大多编程需求。 编写和使用你自己的分配器类是高级 C++ 功能
+    */
+    // The following lines declare objects that use the default allocator.
+    vector<int> v126;
+    vector<int, allocator<int>> v226 = vector<int, allocator<int>>(allocator<int>());
+
+    // v3 will use the same allocator class as v1
+    vector<int> v326(v126.get_allocator());
+
+    vector<int>::allocator_type xvec = v326.get_allocator();
+
+    /***** 26. insert: 将一个、多个或一系列元素插入到指定位置的向量中 *****/
+    /*
+    iterator insert(
+    const_iterator position,
+    const Type& value);
+
+    iterator insert(
+    const_iterator position,
+    Type&& value);
+
+    void insert(
+    const_iterator position,
+    size_type count,
+    const Type& value);
+
+    template <class InputIterator>
+    void insert(
+    const_iterator position,
+    InputIterator first,
+    InputIterator last);
+
+    参数：
+        position：向量中插入第一个元素的位置。
+        value：插入到向量中的元素的值。
+        count：插入向量中的元素数目。
+        first：要复制的范围元素中的第一个元素的位置。
+        last：要复制的元素范围以外的第一个元素的位置。
+    返回值：
+        前两个 insert 函数返回一个指定新元素插入到向量的位置的迭代器
+    */
+    vector<int> v27{12, 23, 45};
+    v27 = {15, 45, 56, 123};
+    for (auto &&i : v27) {
+        cout << i << " ";
+    }
+    cout << endl;
+
 }
 
 /*

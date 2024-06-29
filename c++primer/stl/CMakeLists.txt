@@ -5,3 +5,7 @@ add_subdirectory(deque_)
 add_subdirectory(vector_)
 
 add_subdirectory(iterator_)
+
+add_subdirectory(array_)
+
+add_subdirectory(my_stl)

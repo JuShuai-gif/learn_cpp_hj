@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.5)
 project(learn_cpp_hj VERSION 1.0)
 
 # 设置C++标准
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 指定编译类型为Release

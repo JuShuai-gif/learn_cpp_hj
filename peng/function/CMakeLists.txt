@@ -1,0 +1,1 @@
+add_executable(function_bind_ bind_.cpp)

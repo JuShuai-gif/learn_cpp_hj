@@ -64,7 +64,8 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "variant": "cpp",
-        "bit": "cpp"
+        "bit": "cpp",
+        "shared_mutex": "cpp"
     },
     "cmake.sourceDirectory": "/home/robot/code/c++/learn_cpp_hj/C++primer/13"
 }

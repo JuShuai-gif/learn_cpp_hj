@@ -1,6 +1,6 @@
 
 include_directories(${CMAKE_SOURCE_DIR}/tinySTL/include)
-message("**********"+${CMAKE_SOURCE_DIR}/tinySTL/include)
+
 add_executable(test test/test.cpp)
 
 add_executable(test1 test/test1.cpp)

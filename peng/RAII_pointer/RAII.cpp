@@ -33,7 +33,7 @@ void test(){
 void test2(){
     RAIITest fout;
     fout.fun();
-    // 执行到这里，会自动析构fout对象
+    // 执行到这里，会自动析构fout对象,下面抛出异常了
     throw std::runtime_error("中道蹦粗");
     fout.fun();  
 }

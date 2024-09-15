@@ -9,3 +9,5 @@ add_subdirectory(function)
 add_subdirectory(SIMD)
 
 add_subdirectory(memory)
+
+add_subdirectory(inheritance)

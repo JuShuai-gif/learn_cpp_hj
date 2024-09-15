@@ -10,6 +10,9 @@ struct C {
     C() {
         printf("分配内存!\n");
     }
+    C(int num):num(num) {
+        printf("分配内存!\n");
+    }
 
     ~C() {
         printf("释放内存!\n");
@@ -17,6 +20,10 @@ struct C {
 
     void do_something() {
         printf("我的数字是 %d!\n", num);
+    }
+
+    void do_something_no_num() {
+        printf("不调用数字 num!\n");
     }
 };
 /*
@@ -140,18 +147,40 @@ int main() {
         printf("移交后：%p\n", p.get()); // 为空
         // 这里有个问题就是，如果C的 do_something 没有调用成员变量，这里是不会报错的
         // 现在do_something() 中调用了成员变量 nums 就会报错
-        // p->do_something();
+        // p->do_something();  调用了sum会报错
+        /*
+        如果 do_something_no_num() 在实现中没有解引用 this 指针，
+        C++ 标准允许它在 p 是 nullptr 时正常工作。
+        换句话说，只有当成员函数试图访问对象的成员变量或成员函数时，才需要有效的 this 指针。
+        */
+        p->do_something_no_num();
     }
 
     {
-        std::unique_ptr<C> p = std::make_unique<C>();
+        std::unique_ptr<C> p3 = std::make_unique<C>();
+        std::unique_ptr<C> p4;
+        // p3 = p4; // 非法的
+        p4 = std::move(p3);// 可以
+    }
+
+    {
+        std::cout << "raw_p指向的数据\n";
+        std::unique_ptr<C> p = std::make_unique<C>(250);
+        p->do_something();
         C *raw_p = p.get();
         after_move_func(std::move(p));
 
         objects.clear();
         // raw_p始终指向的是p的地址，如果objects被清空之后，raw_p就会变成空悬指针、
         // 有时候它并不会报错，但是它会造成读取值出现错误，这样引起的bug会非常难找
-        raw_p->do_something();
+        // 这时候raw_p会变成悬空指针，指针仍然指向无效的内存
+        if (raw_p){
+            raw_p->do_something();
+        }else{
+            std::cout << "raw_p为null\n";
+        }
+        
+        
     }
 
     std::cout << "智能指针\n";
@@ -201,6 +230,7 @@ int main() {
     // shared_ptr和weak_ptr是一对，他俩常常在一起使用
     // unique_ptr和原始指针一起使用
     {
+        std::cout << "************************\n";
         std::shared_ptr<C> p = std::make_shared<C>();
         printf("use count = %ld\n", p.use_count());
         std::weak_ptr<C> weak_p = p;

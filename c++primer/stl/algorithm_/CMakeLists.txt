@@ -4,4 +4,4 @@ add_executable(stl_algorithm_accumlate_test accumlate_test.cpp)
 
 add_executable(stl_algorithm_adjacent_difference_test adjacent_difference_test.cpp)
 
-
+add_executable(stl_algorithm_Sort_Algo Sort_Algo.cpp)

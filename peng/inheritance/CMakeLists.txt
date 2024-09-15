@@ -1,0 +1,1 @@
+add_executable(peng_class_size class_size.cpp)
